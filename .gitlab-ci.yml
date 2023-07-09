@@ -1,0 +1,21 @@
+image: publysher/hugo
+
+variables:
+  AWS_REGION: "us-east-1"
+  AWS_ACCESS_KEY: AKIAILAL5KT2JJOXJLEQ
+  S3_BUCKET: "s3://gov.mindgrub.com"
+
+production:
+  type: deploy
+  before_script:
+  - apt-get update
+  - apt-get -qq install python python-pip ca-certificates
+  - pip install awscli
+  - aws configure set default.region "$AWS_REGION"; aws configure set aws_access_key_id "$AWS_ACCESS_KEY" ; aws configure set aws_secret_access_key "$AWS_SECRET_KEY";
+  script:
+  - aws s3 sync . "$S3_BUCKET" --exclude ".gi*"
+  artifacts:
+    paths:
+    - .
+  only:
+  - master
